@@ -4,9 +4,16 @@
 
 Transform raw CSV restaurant data into actionable business insights with interactive visualizations and AI-generated recommendations — delivered in under 30 seconds.
 
-## 🎥 **Demo Walkthrough**
+## 🎬 **Demo Walkthrough**
 
-[![🎬 Watch Demo Video](https://img.shields.io/badge/🎬-Watch%20Demo%20Video-blue?style=for-the-badge)](./demo-video.mp4)
+> **Upload your video to a GitHub issue to get a playable embed URL, then replace the URL below:**
+
+<video width="100%" controls>
+  <source src="./demo-video.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+*Or click here to download: [📥 Download Demo Video](./demo-video.mp4)*
 
 *Complete walkthrough: CSV upload → AI analysis → Interactive dashboard generation (30 seconds)*
 
