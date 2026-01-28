@@ -4,7 +4,13 @@
 
 Transform raw CSV restaurant data into actionable business insights with interactive visualizations and AI-generated recommendations — delivered in under 30 seconds.
 
-[![🎥 Demo Video](https://img.shields.io/badge/🎥-Watch%20Demo-blue?style=for-the-badge)](./Screen%20Recording%202025-08-22%20at%202.17.50%20PM.mov)
+## 🎥 **Demo Walkthrough**
+
+[![🎬 Watch Demo Video](https://img.shields.io/badge/🎬-Watch%20Demo%20Video-blue?style=for-the-badge)](./Screen%20Recording%202025-08-22%20at%202.17.50%20PM.mp4)
+
+*Complete walkthrough: CSV upload → AI analysis → Interactive dashboard generation (30 seconds)*
+
+> **Click above to watch the video directly in your browser**
 
 ---
 
