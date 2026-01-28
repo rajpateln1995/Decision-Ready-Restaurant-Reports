@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Decision-Ready Restaurant Reports
+  
+  SAM Template for deploying the restaurant reports processing service
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 120
+    MemorySize: 3008  # Max memory for faster processing  
+    # Force new deployment
+    # Runtime removed for container deployment - specified in Dockerfile instead
+  Api:
+    Cors:
+      AllowMethods: "'GET,POST,OPTIONS'"
+      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Requested-With'"
+      AllowOrigin: "'*'"
+      MaxAge: "'600'"
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+    Description: Environment name
+
+Resources:
+  RestaurantReportsFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: .
+    Properties:
+      PackageType: Image
+      ImageUri: .
+      Architectures:
+        - x86_64
+      Role: arn:aws:iam::676018146487:role/lambda_s3
+      Timeout: 300
+      MemorySize: 1024
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Environment
+          LOG_LEVEL: INFO
+      Events:
+        RestaurantReports:
+          Type: Api
+          Properties:
+            Path: /process
+            Method: post
+
+
+Outputs:
+  RestaurantReportsApi:
+    Description: "API Gateway endpoint URL for Restaurant Reports function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Stage/process/"
+  RestaurantReportsFunction:
+    Description: "Restaurant Reports Lambda Function ARN"
+    Value: !GetAtt RestaurantReportsFunction.Arn

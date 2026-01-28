@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍕 Decision-Ready Restaurant Reports</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Marked.js for Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <style>
+        .upload-area {
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .upload-area:hover, .upload-area.drag-over {
+            border-color: #0056b3;
+            background-color: #f8f9fa;
+        }
+        .result-section {
+            display: none;
+        }
+        .loading-spinner {
+            display: none;
+        }
+        .markdown-content {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .markdown-content-full {
+            /* No height restrictions - show all content */
+            border: none;
+            padding: 0;
+            background-color: transparent;
+        }
+        .chart-container {
+            min-height: 400px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .chart-container-full {
+            /* Full height without restrictions */
+            min-height: 600px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .alert-custom {
+            border-radius: 10px;
+        }
+        .btn-custom {
+            border-radius: 25px;
+            padding: 10px 30px;
+        }
+        .header-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-0"><i class="bi bi-graph-up"></i> Decision-Ready Restaurant Reports</h1>
+                    <p class="mb-0 mt-2">Upload your restaurant data and get AI-powered insights instantly</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <i class="bi bi-clipboard-data" style="font-size: 3rem; opacity: 0.7;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Upload Section -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-cloud-upload"></i> Upload Restaurant Data</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="uploadArea" class="upload-area" onclick="document.getElementById('fileInput').click()">
+                            <i class="bi bi-file-earmark-zip text-primary mb-3" style="font-size: 3rem;"></i>
+                            <h5>Drop your ZIP file here or click to browse</h5>
+                            <p class="text-muted mb-0">Supports ZIP files containing CSV restaurant data</p>
+                            <input type="file" id="fileInput" accept=".zip" style="display: none;">
+                        </div>
+                        
+                        <!-- Selected file info -->
+                        <div id="fileInfo" class="mt-3" style="display: none;">
+                            <div class="alert alert-info alert-custom">
+                                <i class="bi bi-info-circle"></i> 
+                                <strong>Selected:</strong> <span id="fileName"></span> 
+                                (<span id="fileSize"></span>)
+                            </div>
+                            <button id="uploadBtn" class="btn btn-success btn-custom">
+                                <i class="bi bi-upload"></i> Generate Report
+                            </button>
+                        </div>
+
+                        <!-- Loading state -->
+                        <div id="loadingSection" class="loading-spinner text-center py-4">
+                            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <h5 class="mt-3">Processing your restaurant data...</h5>
+                            <p class="text-muted">This may take 60-90 seconds for complete AI analysis</p>
+                            <p class="text-small text-muted">Including: Data processing, AI insights, and chart generation</p>
+                            <div class="progress mt-3" style="height: 10px;">
+                                <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                     style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Error state -->
+                        <div id="errorSection" style="display: none;">
+                            <div class="alert alert-danger alert-custom">
+                                <i class="bi bi-exclamation-triangle"></i> 
+                                <strong>Error:</strong> <span id="errorMessage"></span>
+                            </div>
+                            <button class="btn btn-secondary" onclick="resetForm()">
+                                <i class="bi bi-arrow-counterclockwise"></i> Try Again
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="result-section mt-4">
+            <!-- Business Analysis (Markdown) - Full Width -->
+            <div class="row">
+                <div class="col-12 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-file-text"></i> Business Analysis</h5>
+                            <a id="markdownLink" href="#" target="_blank" class="btn btn-sm btn-light">
+                                <i class="bi bi-box-arrow-up-right"></i> Open Full Report
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <div id="markdownContent" class="markdown-content-full"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Dashboard (Charts) - Full Width -->
+            <div class="row">
+                <div class="col-12 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Interactive Dashboard</h5>
+                            <a id="dashboardLink" href="#" target="_blank" class="btn btn-sm btn-dark">
+                                <i class="bi bi-box-arrow-up-right"></i> Open Full Dashboard
+                            </a>
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="chartContainer" class="chart-container-full">
+                                <iframe id="chartFrame" width="100%" height="600" frameborder="0"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Info -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0"><i class="bi bi-info-circle"></i> Report Summary</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <strong>Request ID:</strong> <span id="requestId"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>File Processed:</strong> <span id="processedFile"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Generated:</strong> <span id="generateTime"></span>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <strong>AI Summary:</strong>
+                                <p id="aiSummary" class="mb-0 mt-2"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-5 py-4 bg-light text-center">
+        <div class="container">
+            <p class="text-muted mb-0">
+                <i class="bi bi-cpu"></i> Powered by AI • 
+                <i class="bi bi-cloud"></i> AWS Lambda • 
+                <i class="bi bi-bootstrap"></i> Bootstrap
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Configuration
+        const API_ENDPOINT = 'https://fr49j9off8.execute-api.us-east-1.amazonaws.com/Stage/process/';
+        
+        // DOM Elements
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const loadingSection = document.getElementById('loadingSection');
+        const errorSection = document.getElementById('errorSection');
+        const errorMessage = document.getElementById('errorMessage');
+        const resultsSection = document.getElementById('resultsSection');
+        const progressBar = document.getElementById('progressBar');
+
+        let selectedFile = null;
+
+        // File input change handler
+        fileInput.addEventListener('change', handleFileSelect);
+
+        // Drag and drop handlers
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('drag-over');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        // Upload button handler
+        uploadBtn.addEventListener('click', uploadFile);
+
+        function handleFileSelect(e) {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        }
+
+        function handleFile(file) {
+            if (!file.name.toLowerCase().endsWith('.zip')) {
+                showError('Please select a ZIP file containing CSV data.');
+                return;
+            }
+
+            selectedFile = file;
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            fileInfo.style.display = 'block';
+            hideError();
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        async function uploadFile() {
+            if (!selectedFile) return;
+
+            showLoading();
+            hideError();
+            hideResults();
+
+            try {
+                // Simulate progress
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += Math.random() * 10;
+                    if (progress > 90) progress = 90;
+                    progressBar.style.width = progress + '%';
+                }, 500);
+
+                // Convert file to base64
+                const base64Data = await fileToBase64(selectedFile);
+                
+                // Call Lambda API with extended timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minutes timeout
+                
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        zip_base64: base64Data,  // ✅ Correct field name for base64 ZIP data
+                        file_name: selectedFile.name.replace('.zip', ''),  // Remove extension
+                        file_type: 'zip'
+                    }),
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+
+                clearInterval(progressInterval);
+                progressBar.style.width = '100%';
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.delivery_method === 'S3_dashboard') {
+                    showResults(result);
+                } else {
+                    throw new Error(result.warning || 'Failed to generate dashboard');
+                }
+
+            } catch (error) {
+                console.error('Upload error:', error);
+                
+                if (error.name === 'AbortError') {
+                    showError('Processing timeout (2 minutes exceeded). The file may be too large or complex. Please try with a smaller dataset.');
+                } else if (error.message.includes('504')) {
+                    showError('Gateway timeout. The AI analysis is taking longer than expected. Please try again or use a smaller dataset.');
+                } else {
+                    showError(`Failed to process file: ${error.message}`);
+                }
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    // Remove data:application/zip;base64, prefix
+                    const base64 = reader.result.split(',')[1];
+                    resolve(base64);
+                };
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        async function showResults(data) {
+            hideLoading();
+            
+            // Show results section
+            resultsSection.style.display = 'block';
+            
+            // Populate summary info
+            document.getElementById('requestId').textContent = data.request_id || 'N/A';
+            document.getElementById('processedFile').textContent = data.file_name || 'N/A';
+            document.getElementById('generateTime').textContent = new Date().toLocaleString();
+            document.getElementById('aiSummary').textContent = data.ai_summary || 'AI analysis completed successfully';
+
+            // Set up links
+            const markdownUrl = data.reports.business_analysis;
+            const dashboardUrl = data.reports.interactive_dashboard;
+            
+            document.getElementById('markdownLink').href = markdownUrl;
+            document.getElementById('dashboardLink').href = dashboardUrl;
+
+            // Load and display markdown content
+            if (markdownUrl) {
+                try {
+                    const markdownResponse = await fetch(markdownUrl, {
+                        headers: {
+                            'Accept': 'text/markdown; charset=utf-8'
+                        }
+                    });
+                    
+                    if (!markdownResponse.ok) {
+                        throw new Error(`HTTP ${markdownResponse.status}`);
+                    }
+                    
+                    // Ensure UTF-8 decoding
+                    const arrayBuffer = await markdownResponse.arrayBuffer();
+                    let markdownText = new TextDecoder('utf-8').decode(arrayBuffer);
+                    
+                    console.log('Raw markdown content:', markdownText);
+                    
+                    // Clean up the content more thoroughly
+                    // 1. Strip markdown code block wrapper if present
+                    markdownText = markdownText.replace(/^```markdown\s*\n/, '').replace(/\n```\s*$/, '');
+                    
+                    // 2. Remove AI explanation text before the actual markdown
+                    // Look for the first markdown heading and start from there
+                    const firstHeadingMatch = markdownText.match(/^#\s+/m);
+                    if (firstHeadingMatch) {
+                        const headingIndex = markdownText.indexOf(firstHeadingMatch[0]);
+                        markdownText = markdownText.substring(headingIndex);
+                    }
+                    
+                    // 3. Clean up any remaining prefixes
+                    markdownText = markdownText.replace(/^.*?(?=^#\s+)/ms, '');
+                    
+                    console.log('Cleaned markdown content:', markdownText);
+                    
+                    // Parse markdown to HTML
+                    const htmlContent = marked.parse(markdownText);
+                    console.log('Generated HTML:', htmlContent);
+                    
+                    document.getElementById('markdownContent').innerHTML = htmlContent;
+                } catch (error) {
+                    console.error('Markdown fetch error:', error);
+                    document.getElementById('markdownContent').innerHTML = 
+                        '<p class="text-danger">Error loading markdown content. <a href="' + markdownUrl + '" target="_blank">View directly</a></p>';
+                }
+            }
+
+            // Load dashboard in iframe
+            if (dashboardUrl) {
+                document.getElementById('chartFrame').src = dashboardUrl;
+            }
+
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showLoading() {
+            loadingSection.style.display = 'block';
+            uploadBtn.disabled = true;
+            progressBar.style.width = '10%';
+        }
+
+        function hideLoading() {
+            loadingSection.style.display = 'none';
+            uploadBtn.disabled = false;
+            progressBar.style.width = '0%';
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorSection.style.display = 'block';
+        }
+
+        function hideError() {
+            errorSection.style.display = 'none';
+        }
+
+        function hideResults() {
+            resultsSection.style.display = 'none';
+        }
+
+        function resetForm() {
+            selectedFile = null;
+            fileInput.value = '';
+            fileInfo.style.display = 'none';
+            hideError();
+            hideResults();
+            hideLoading();
+        }
+    </script>
+</body>
+</html>

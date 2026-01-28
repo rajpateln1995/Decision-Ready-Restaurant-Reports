@@ -1,0 +1,18 @@
+{
+  "body": "{\"csv_data\": \"Date,Restaurant,Sales,Orders,Average_Order_Value\\n2024-01-01,Toast Restaurant,1250.50,25,50.02\\n2024-01-02,Toast Restaurant,1480.75,28,52.88\\n2024-01-03,Toast Restaurant,1100.25,22,50.01\\n2024-01-04,Toast Restaurant,1650.00,30,55.00\\n2024-01-05,Toast Restaurant,1890.25,35,54.01\", \"file_name\": \"sample_restaurant_data\"}",
+  "headers": {
+    "Content-Type": "application/json",
+    "User-Agent": "test-client",
+    "Accept": "application/json"
+  },
+  "httpMethod": "POST",
+  "path": "/process",
+  "queryStringParameters": null,
+  "pathParameters": null,
+  "requestContext": {
+    "httpMethod": "POST",
+    "path": "/process",
+    "stage": "test"
+  },
+  "isBase64Encoded": false
+}

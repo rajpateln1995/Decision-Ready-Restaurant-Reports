@@ -1,0 +1,25 @@
+# Container Lambda requirements - ALL dependencies included
+# No size limits with containers!
+
+# AWS SDK (essential for Lambda)
+boto3>=1.26.0
+botocore>=1.29.0
+
+# AI/ML APIs (previously in ai-layer)
+google-generativeai>=0.8.0
+
+# Data processing (previously in ai-layer) 
+pandas>=1.5.0
+numpy>=1.24.0
+
+# Excel support (previously in utils-layer)
+openpyxl>=3.1.0
+
+# JSON handling (previously in utils-layer)
+pydantic>=2.0.0
+
+# Date/time handling (previously in utils-layer)
+python-dateutil>=2.8.0
+
+# Environment management (previously in utils-layer)
+python-dotenv>=1.0.0

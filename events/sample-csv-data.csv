@@ -1,0 +1,12 @@
+Date,Restaurant,Sales,Orders,Average_Order_Value,Items_Sold,Customer_Count
+2024-01-01,Toast Restaurant,1250.50,25,50.02,125,25
+2024-01-02,Toast Restaurant,1480.75,28,52.88,148,28
+2024-01-03,Toast Restaurant,1100.25,22,50.01,110,22
+2024-01-04,Toast Restaurant,1650.00,30,55.00,165,30
+2024-01-05,Toast Restaurant,1890.25,35,54.01,189,35
+2024-01-06,Toast Restaurant,2150.00,40,53.75,215,40
+2024-01-07,Toast Restaurant,1975.50,38,51.99,197,38
+2024-01-08,Toast Restaurant,1725.25,33,52.28,172,33
+2024-01-09,Toast Restaurant,2000.00,39,51.28,200,39
+2024-01-10,Toast Restaurant,1875.75,36,52.10,187,36
+

@@ -1,0 +1,29 @@
+# Exclude files not needed in Lambda container
+
+# Git and development files
+.git/
+.gitignore
+README.md
+
+# AWS SAM build artifacts
+.aws-sam/
+samconfig.toml
+
+# Python cache and virtual environments
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# IDE files
+.vscode/
+.idea/
+
+# Test files (keep test_deployment.py for container testing)
+test_gemini_simple.py
+
+# Docker files (already copied)
+.dockerignore
+
+# Documentation
+*.md
