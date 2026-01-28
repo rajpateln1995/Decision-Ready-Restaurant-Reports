@@ -7,7 +7,7 @@ Transform raw CSV restaurant data into actionable business insights with interac
 ## 🎬 **Demo Walkthrough**
 
 <video width="100%" controls>
-  <source src="https://drive.google.com/file/d/17nX94T2REDPT9TYvtREFMQPlV-N7x-0b/view?usp=drivesdk" type="video/mp4">
+  <source src="https://drive.google.com/uc?export=download&id=17nX94T2REDPT9TYvtREFMQPlV-N7x-0b" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
