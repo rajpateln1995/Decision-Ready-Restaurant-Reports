@@ -6,10 +6,8 @@ Transform raw CSV restaurant data into actionable business insights with interac
 
 ## 🎬 **Demo Walkthrough**
 
-> **Upload your video to a GitHub issue to get a playable embed URL, then replace the URL below:**
-
 <video width="100%" controls>
-  <source src="./demo-video.mp4" type="video/mp4">
+  <source src="https://drive.google.com/file/d/17nX94T2REDPT9TYvtREFMQPlV-N7x-0b/view?usp=drivesdk" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
