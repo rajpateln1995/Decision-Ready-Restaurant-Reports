@@ -6,17 +6,11 @@ Transform raw CSV restaurant data into actionable business insights with interac
 
 ## 🎬 **Demo Walkthrough**
 
-<video width="100%" controls>
-  <source src="https://drive.google.com/uc?export=download&id=17nX94T2REDPT9TYvtREFMQPlV-N7x-0b" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-
-*Or click here to download: [📥 Download Demo Video](./demo-video.mp4)*
+[![🎬 Watch Full Demo](https://img.shields.io/badge/🎬-Watch%20Full%20Demo%20Video-red?style=for-the-badge&logo=googledrive)](https://drive.google.com/file/d/17nX94T2REDPT9TYvtREFMQPlV-N7x-0b/view?usp=drivesdk)
 
 *Complete walkthrough: CSV upload → AI analysis → Interactive dashboard generation (30 seconds)*
 
-> **Click above to watch the video directly in your browser**
-
+**Alternative:** [📥 Download Video File](./demo-video.mp4)
 ---
 
 ## 🎯 **Project Overview**
